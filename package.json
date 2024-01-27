@@ -1,0 +1,19 @@
+{
+  "name": "firebase-async",
+  "version": "1.0.0",
+  "description": "Firebase Async is a firebase wrapper to load firebase only when you need it so it's not bundled in the main file. It also simplifies functions calls.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxirozay/waterbase.git"
+  },
+  "author": "Maxime Rossier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maxirozay/waterbase/issues"
+  },
+  "homepage": "https://github.com/maxirozay/waterbase#readme"
+}

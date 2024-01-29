@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxirozay/waterbase.git"
+    "url": "git+https://github.com/maxirozay/firebase-async.git"
   },
   "author": "Maxime Rossier",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maxirozay/waterbase/issues"
+    "url": "https://github.com/maxirozay/firebase-async/issues"
   },
-  "homepage": "https://github.com/maxirozay/waterbase#readme"
+  "homepage": "https://github.com/maxirozay/firebase-async#readme"
 }

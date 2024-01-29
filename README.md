@@ -4,7 +4,7 @@ Firebase Async is a firebase wrapper to load firebase only when you need it so i
 # Getting started
 ## Load your config
 ```
-import { loadConfig } from 'waterbase'
+import { loadConfig } from 'firebase-async'
 loadConfig({
   '[DEFAULT]': {
     app: // firebase app config,
@@ -16,7 +16,7 @@ loadConfig({
 ```
 ## Firestore
 ```
-import { getDB } from 'waterbase'
+import { getDB } from 'firebase-async'
 const db = await getDB() // contains orderBy, where, limit, startAt, startAfter, count, sum, average
 const doc = await db.get(path, id)
 await db.set(doc, /* optional path if the doc doesn't hold its ref */)
@@ -28,14 +28,14 @@ const docs = await db.getDocs(path, [db.orderBy('date', 'desc')], isCollectionGr
 ```
 ## Auth
 ```
-import { getAuth } from 'waterbase'
+import { getAuth } from 'firebase-async'
 const auth = await getAuth() // contains getAuth as auth, signOut, onAuthStateChanged
 await auth.emailLink() // get email link functions
 await auth.anonymous() // get anonymous functions
 ```
 ## Storage
 ```
-import { getStorage } from 'waterbase'
+import { getStorage } from 'firebase-async'
 const storage = await getStorage()
 storage.uploadImage(src, path, height = 720, width, quality = 0.8, format = 'webp')
 storage.formatImage(image, height, width)
@@ -46,11 +46,11 @@ storage.deleteFolder(path)
 ```
 ## Functions
 ```
-import { callFunction } from 'waterbase'
+import { callFunction } from 'firebase-async'
 await callFunction('functionName', params)
 ```
 ## Emulator
 ```
-import { emulate } from 'waterbase'
+import { emulate } from 'firebase-async'
 emulate()
 ```

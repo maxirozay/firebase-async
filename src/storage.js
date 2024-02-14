@@ -27,7 +27,7 @@ export class Storage {
     const pathRef = ref(this.storage, path + '.' + format)
     const metadata = {
       contentType: 'image/' + format,
-      cacheControl: 'public,max-age=604800'
+      cacheControl: 'public,max-age=31536000'
     }
     await uploadString(pathRef, data, 'data_url', metadata)
     return getDownloadURL(pathRef)
@@ -61,7 +61,7 @@ export class Storage {
     const storageRef = ref(this.storage, path)
     const metadata = meta || {
       contentType: file.type,
-      cacheControl: 'public,max-age=604800'
+      cacheControl: 'public,max-age=31536000'
     }
     const uploadTask = uploadBytesResumable(storageRef, file, metadata)
     uploadTask.on('state_changed',

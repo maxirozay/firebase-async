@@ -1,12 +1,13 @@
-import { loadConfig, getApp, getAuth, getDB, callFunction, getStorage, getAnalytics } from '../src/index.js'
+import { loadConfig, getApp, getAuth, getDB, callFunction, getStorage, getAnalytics, emulate } from '../src/index.js'
 import config from './config.js'
 
 loadConfig(config)
 getApp()
   .then(async () => {
+    await emulate()
     await getAuth()
     await getDB()
-    await callFunction().catch(() => {})
+    await callFunction('test')
     await getStorage()
     await getAnalytics()
     document.getElementById('output').innerHTML = 'OK'

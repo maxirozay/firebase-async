@@ -40,6 +40,10 @@ export async function callFunction (functionName, params, appName) {
   return functions.callFunction(functionName, params, appName)
 }
 
+export async function getAnalytics (appName) {
+  return load((await import('./analytics')).Analytics, 'analytics', appName)
+}
+
 export async function emulate (appName) {
   const functions = await load((await import('./functions')).Functions, 'functions', appName)
   const emulator = await import('./emulator')

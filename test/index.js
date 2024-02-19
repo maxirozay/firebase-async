@@ -1,4 +1,4 @@
-import { loadConfig, getApp, getAuth, getDB, callFunction, getStorage } from '../src/index.js'
+import { loadConfig, getApp, getAuth, getDB, callFunction, getStorage, getAnalytics } from '../src/index.js'
 import config from './config.js'
 
 loadConfig(config)
@@ -8,6 +8,7 @@ getApp()
     await getDB()
     await callFunction().catch(() => {})
     await getStorage()
+    await getAnalytics()
     document.getElementById('output').innerHTML = 'OK'
   })
   .catch(error => {

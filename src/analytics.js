@@ -10,15 +10,15 @@ export class Analytics {
     this.analytics = getAnalytics(app)
   }
 
-  async log (data) {
+  log (data) {
     logEvent(this.analytics, data)
   }
 
-  async setUserProperties (data) {
+  setUserProperties (data) {
     setUserProperties(this.analytics, data)
   }
 
-  async setUserId (id) {
+  setUserId (id) {
     setUserId(this.analytics, id)
   }
 }

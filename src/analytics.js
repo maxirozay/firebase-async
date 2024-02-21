@@ -10,8 +10,8 @@ export class Analytics {
     this.analytics = getAnalytics(app)
   }
 
-  log (data) {
-    logEvent(this.analytics, data)
+  log (eventName, data) {
+    logEvent(this.analytics, eventName, data)
   }
 
   setUserProperties (data) {

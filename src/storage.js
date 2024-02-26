@@ -14,7 +14,7 @@ export class Storage {
     this.storage = getStorage(app)
   }
 
-  async uploadImage (src, path, height = 720, width, quality = 0.8, format = 'webp') {
+  async uploadImage (src, path, height, width, quality = 0.8, format = 'webp', maxPixels) {
     if (src.type) {
       src = await new Promise((resolve) => {
         const image = new Image()
@@ -22,7 +22,7 @@ export class Storage {
         image.src = URL.createObjectURL(src)
       })
     }
-    const data = this.formatImage(src, height, width)
+    const data = this.formatImage(src, height, width, maxPixels)
       .toDataURL('image/' + format, quality)
     const pathRef = ref(this.storage, path + '.' + format)
     const metadata = {
@@ -33,28 +33,47 @@ export class Storage {
     return getDownloadURL(pathRef)
   }
 
-  formatImage (image, height, width = 0) {
+  formatImage (image, height, width, maxPixels) {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
-    const scaleW = width / image.width
-    const scaleH = height / image.height
-    canvas.height = height
-    canvas.width = width || image.width * scaleH
-    const scale = Math.max(scaleH, scaleW)
-    const scaledWidth = image.width * scale
-    const scaledHeight = image.height * scale
+    if (!height && !width && !maxPixels) {
+      canvas.height = image.height
+      canvas.width = image.width
+      ctx.drawImage(image, 0, 0)
+      return canvas
+    }
+    const dimensions = this.getDimensions(image, height, width, maxPixels)
+    canvas.height = dimensions.height
+    canvas.width = dimensions.width
     ctx.drawImage(
       image,
       0,
       0,
       image.width,
       image.height,
-      (canvas.width - scaledWidth) / 2,
-      (canvas.height - scaledHeight) / 2,
-      scaledWidth,
-      scaledHeight
+      (canvas.width - dimensions.scaledWidth) / 2,
+      (canvas.height - dimensions.scaledHeight) / 2,
+      dimensions.scaledWidth,
+      dimensions.scaledHeight
     )
     return canvas
+  }
+
+  getDimensions (image, height, width, maxPixels) {
+    let scale
+    if (maxPixels) {
+      const pixels = image.width * image.height
+      if (pixels > maxPixels) scale = Math.sqrt(maxPixels / pixels)
+    }
+    const scaleW = scale || width / image.width
+    const scaleH = scale || height / image.height
+    scale = Math.max(scaleH, scaleW)
+    return {
+      height: height || image.height * scaleW,
+      width: width || image.width * scaleH,
+      scaledWidth: image.width * scale,
+      scaledHeight: image.height * scale
+    }
   }
 
   async uploadFile (file, path, uploadSuccessHandler, progressHandler, meta) {

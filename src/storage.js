@@ -76,26 +76,24 @@ export class Storage {
     }
   }
 
-  async uploadFile (file, path, uploadSuccessHandler, progressHandler, meta) {
-    const storageRef = ref(this.storage, path)
-    const metadata = meta || {
-      contentType: file.type,
-      cacheControl: 'public,max-age=31536000'
-    }
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata)
-    uploadTask.on('state_changed',
-      snapshot => {
-        if (progressHandler) {
-          progressHandler(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) + '%')
-        }
-      },
-      null,
-      async () => {
-        if (uploadSuccessHandler) {
-          uploadSuccessHandler(await getDownloadURL(storageRef))
-        }
+  async uploadFile (file, path, meta, progressHandler) {
+    return new Promise((resolve, reject) => {
+      const storageRef = ref(this.storage, path)
+      const metadata = meta || {
+        contentType: file.type,
+        cacheControl: 'public,max-age=31536000'
       }
-    )
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata)
+      uploadTask.on('state_changed',
+        snapshot => {
+          if (progressHandler) {
+            progressHandler(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) + '%')
+          }
+        },
+        error => reject(error),
+        async () => resolve(await getDownloadURL(storageRef))
+      )
+    })
   }
 
   async download (path, name) {

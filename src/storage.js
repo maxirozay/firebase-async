@@ -14,7 +14,7 @@ export class Storage {
     this.storage = getStorage(app)
   }
 
-  async uploadImage (src, path, height, width, quality = 0.8, format = 'webp', maxPixels) {
+  async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels) {
     if (src.type) {
       src = await new Promise((resolve) => {
         const image = new Image()
@@ -24,7 +24,7 @@ export class Storage {
     }
     const data = this.formatImage(src, height, width, maxPixels)
       .toDataURL('image/' + format, quality)
-    const pathRef = ref(this.storage, path + '.' + format)
+    const pathRef = ref(this.storage, path + '.' + (format || 'webp'))
     const metadata = {
       contentType: 'image/' + format,
       cacheControl: 'public,max-age=31536000'

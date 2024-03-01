@@ -14,7 +14,7 @@ export class Storage {
     this.storage = getStorage(app)
   }
 
-  async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels) {
+  async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels, contain) {
     if (src.type) {
       src = await new Promise((resolve) => {
         const image = new Image()
@@ -22,7 +22,7 @@ export class Storage {
         image.src = URL.createObjectURL(src)
       })
     }
-    const data = this.formatImage(src, height, width, maxPixels)
+    const data = this.formatImage(src, height, width, maxPixels, contain)
       .toDataURL('image/' + format, quality)
     const pathRef = ref(this.storage, path + '.' + (format || 'webp'))
     const metadata = {
@@ -33,7 +33,7 @@ export class Storage {
     return getDownloadURL(pathRef)
   }
 
-  formatImage (image, height, width, maxPixels) {
+  formatImage (image, height, width, maxPixels, contain) {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     if (!height && !width && !maxPixels) {
@@ -42,7 +42,7 @@ export class Storage {
       ctx.drawImage(image, 0, 0)
       return canvas
     }
-    const dimensions = this.getDimensions(image, height, width, maxPixels)
+    const dimensions = this.getDimensions(image, height, width, maxPixels, contain)
     canvas.height = dimensions.height
     canvas.width = dimensions.width
     ctx.drawImage(
@@ -59,7 +59,7 @@ export class Storage {
     return canvas
   }
 
-  getDimensions (image, height, width, maxPixels) {
+  getDimensions (image, height, width, maxPixels, contain) {
     let scale
     if (maxPixels) {
       const pixels = image.width * image.height
@@ -67,7 +67,7 @@ export class Storage {
     }
     const scaleW = scale || width / image.width
     const scaleH = scale || height / image.height
-    scale = Math.max(scaleH, scaleW)
+    scale = contain ? Math.min(scaleH, scaleW) : Math.max(scaleH, scaleW)
     return {
       height: height || image.height * scaleW,
       width: width || image.width * scaleH,

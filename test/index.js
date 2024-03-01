@@ -35,6 +35,10 @@ function testDimensions (storage) {
       params: [{ width: 100, height: 100 }, 10, 20, 0],
       result: {  height: 10, width: 20, scaledWidth: 20, scaledHeight: 20 }
     },
+    {
+      params: [{ width: 100, height: 10 }, 10, 10, 0, true],
+      result: {  height: 10, width: 10, scaledWidth: 10, scaledHeight: 1 }
+    }
   ]
   tests.forEach(t => {
     let dimensions = storage.getDimensions(...t.params)

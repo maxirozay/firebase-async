@@ -64,7 +64,7 @@ export class Storage {
     let scale
     if (maxPixels) {
       const pixels = image.width * image.height
-      if (pixels > maxPixels) scale = Math.sqrt(maxPixels / pixels)
+      if (pixels > maxPixels) scale = Math.min(1, Math.sqrt(maxPixels / pixels))
     }
     const scaleW = scale || width / image.width
     const scaleH = scale || height / image.height

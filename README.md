@@ -37,7 +37,7 @@ await auth.anonymous() // get anonymous functions
 ```
 import { getStorage } from 'firebase-async'
 const storage = await getStorage()
-storage.uploadImage(src, path, height = 720, width, quality = 0.8, format = 'webp')
+storage.uploadImage(src, path, height, width, quality = 0.8, format = 'webp', maxPixels, contain)
 storage.formatImage(image, height, width)
 storage.uploadFile(file, path, uploadSuccessHandler, progressHandler, metadata)
 storage.download(path, name)

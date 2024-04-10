@@ -2,9 +2,8 @@ import * as firestoreLite from 'firebase/firestore/lite'
 
 export class Firestore {
   constructor (app, config = {}) {
-    firestoreLite.initializeFirestore(app, config)
+    this.firestore = firestoreLite.initializeFirestore(app, config)
     this.app = app
-    this.firestore = firestoreLite.getFirestore(app)
 
     this._getDocs = firestoreLite.getDocs
     this._query = firestoreLite.query

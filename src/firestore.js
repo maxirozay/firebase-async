@@ -20,7 +20,11 @@ import {
   count,
   sum,
   average,
-  collectionGroup
+  collectionGroup,
+  onSnapshot as _onSnapshot,
+  loadBundle,
+  namedQuery,
+  getDocsFromCache
 } from 'firebase/firestore'
 
 export class Firestore {
@@ -36,6 +40,9 @@ export class Firestore {
     this.count = count
     this.sum = sum
     this.average = average
+    this.loadBundle = loadBundle
+    this.namedQuery = namedQuery
+    this.getDocsFromCache = getDocsFromCache
   }
 
   async get (path, id) {
@@ -47,6 +54,13 @@ export class Firestore {
       data: snapShot.data(),
       ref
     }
+  }
+
+  async onSnapshot (callback, path, id) {
+    const params = id ? [path, id] : [path]
+    const ref = doc(this.firestore, ...params)
+    const unsub = _onSnapshot(ref, callback)
+    return unsub
   }
 
   query (path, params, group) {

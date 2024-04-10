@@ -3,20 +3,21 @@ import config from './config.js'
 
 loadConfig(config)
 getApp()
-  .then(async () => {
-    await emulate()
-    await getAuth()
-    await testFirestore()
-    const storage = await getStorage()
-    testDimensions(storage)
-    await callFunction('test')
-    await getAnalytics()
-    document.getElementById('output').innerHTML = 'OK'
-  })
-  .catch(error => {
-    document.getElementById('output').innerHTML = error.message
-    console.log(error)
-  })
+test().catch(error => {
+  document.getElementById('output').innerHTML = error.message
+  console.log(error)
+})
+
+async function test () {
+  await emulate()
+  await getAuth()
+  await testFirestore()
+  const storage = await getStorage()
+  testDimensions(storage)
+  await callFunction('test')
+  await getAnalytics()
+  document.getElementById('output').innerHTML = 'OK'
+}
 
 function testDimensions (storage) {
   const tests = [

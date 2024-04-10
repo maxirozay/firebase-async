@@ -1,3 +1,5 @@
+import { initializeApp } from 'firebase/app'
+
 const apps = {}
 const defaultName = '[DEFAULT]'
 let config
@@ -6,17 +8,16 @@ export function loadConfig (c) {
   config = c
 }
 
-export async function getApp (appName = defaultName) {
+export function getApp (appName = defaultName) {
   if (apps[appName]) return apps[appName]
   apps[appName] = {
-    app: (await import('./app'))
-      .initializeApp(config[appName].app, appName)
+    app: initializeApp(config[appName].app, appName)
   }
   return apps[appName]
 }
 
 async function load (Lib, libName, appName) {
-  const app = await getApp(appName)
+  const app = getApp(appName)
   if (!app[libName]) {
     app[libName] = new Lib(app.app, config[appName || defaultName][libName])
   }

@@ -6,7 +6,7 @@ getApp()
   .then(async () => {
     await emulate()
     await getAuth()
-    await getDB()
+    await testFirestore()
     const storage = await getStorage()
     testDimensions(storage)
     await callFunction('test')
@@ -15,6 +15,7 @@ getApp()
   })
   .catch(error => {
     document.getElementById('output').innerHTML = error.message
+    console.log(error)
   })
 
 function testDimensions (storage) {
@@ -50,4 +51,25 @@ function testDimensions (storage) {
       throw new Error(JSON.stringify(t.params) + ' ' + JSON.stringify(dimensions) + ' !== ' + JSON.stringify(t.result))
     }
   })
+}
+
+async function testFirestore () {
+  const db = await getDB()
+
+  const testDoc = async () => {
+    let doc = await db.get('test', 'test')
+    doc.data = { test: 'test' }
+    await db.set(doc, 'test')
+    await db.update(doc, { test: 'test' })
+    await db.del(doc)
+    await db.getDocs('test', [db.orderBy('test'), db.where('test', '==', 'test')])
+    await db.countDocs('test')
+    await db.aggregate({ test: db.sum('test') }, 'test')
+  }
+
+  await testDoc()
+  await db.loadExtra()
+  const unsub = db.onSnapshot(db.getRef('test', 'test'), (doc) => {}, 'test', 'test')
+  await testDoc()
+  unsub()
 }

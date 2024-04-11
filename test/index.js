@@ -55,8 +55,7 @@ function testDimensions (storage) {
 }
 
 async function testFirestore () {
-  const db = await getDB()
-
+  let db = await getDB()
   const testDoc = async () => {
     let doc = await db.get('test', 'test')
     doc.data = { test: 'test' }
@@ -69,8 +68,13 @@ async function testFirestore () {
   }
 
   await testDoc()
-  await db.loadExtra()
+  db = await getDB(true, true)
   const unsub = db.onSnapshot(db.getRef('test', 'test'), (doc) => {}, 'test', 'test')
   await testDoc()
+  await db.set({ id: 'test', data: {} }, 'test')
+  await db.get('test', 'test')
+  db.disableNetwork(db.firestore)
+  await db.get('test', 'test')
+  db.enableNetwork(db.firestore)
   unsub()
 }

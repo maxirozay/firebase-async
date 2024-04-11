@@ -1,27 +1,36 @@
-import * as firestoreLite from 'firebase/firestore/lite'
-
 export class Firestore {
   constructor (app, config = {}) {
-    this.firestore = firestoreLite.initializeFirestore(app, config)
     this.app = app
-
-    this._getDocs = firestoreLite.getDocs
-    this._query = firestoreLite.query
-    for (const key in firestoreLite) {
-      if (!this['_' + key]) this[key] = firestoreLite[key]
-    }
+    this.config = config
   }
 
-  async loadExtra () {
-    if (this.isFull) return
-    const firestore = await import('./firestoreFull')
-    this.firestore = firestore.getFirestore(this.app)
-    this._getDocs = firestore.getDocs
-    this._query = firestore.query
-    for (const key in firestore) {
-      if (!this['_' + key]) this[key] = firestore[key]
-    }
-    this.isFull = true
+  async loadSDK (loadFull = true, persist) {
+    if (this.promise) await this.promise
+    if (persist) loadFull = true
+    if ((this.isFull && (!persist || this.isPersistant)) || (!loadFull && this.firestore)) return
+    this.promise = new Promise(async resolve => {
+      const sdk = await (loadFull
+        ? import('firebase/firestore')
+        : import('firebase/firestore/lite')
+      )
+      if (this.firestore) await this.terminate(this.firestore)
+      if (persist) {
+        this.config.localCache = sdk.persistentLocalCache({
+          tabManager: sdk.persistentMultipleTabManager()
+        })
+      }
+      this.firestore = sdk.initializeFirestore(this.app, this.config)
+      this._getDocs = sdk.getDocs
+      this._query = sdk.query
+      for (const key in sdk) {
+        if (!this['_' + key]) this[key] = sdk[key]
+      }
+      this.isFull = !!loadFull
+      this.isPersistant = !!persist
+      resolve()
+    })
+    await this.promise
+    delete this.promise
   }
 
   getRef (path, id) {
@@ -61,13 +70,13 @@ export class Firestore {
   }
 
   async countDocs (path, params, group) {
-    await this.loadExtra()
+    await this.loadSDK()
     const snapShot = await this.getCountFromServer(this.query(path, params, group))
     return snapShot.data().count
   }
 
   async aggregate (data, path, params, group) {
-    await this.loadExtra()
+    await this.loadSDK()
     const snapShot = await this.getAggregateFromServer(this.query(path, params, group), data)
     return snapShot.data()
   }

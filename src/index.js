@@ -24,8 +24,10 @@ async function load (Lib, libName, appName) {
   return app[libName]
 }
 
-export async function getDB (appName) {
-  return load((await import('./firestore')).Firestore, 'firestore', appName)
+export async function getDB (full, persist, appName) {
+  const db = await load((await import('./firestore')).Firestore, 'firestore', appName)
+  await db.loadSDK(!!full, !!persist)
+  return db
 }
 
 export async function getStorage (appName) {

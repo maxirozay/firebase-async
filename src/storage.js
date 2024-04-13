@@ -15,12 +15,8 @@ export class Storage {
 
   async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels, contain, progressHandler) {
     format = format || 'webp'
-    if (src.type) {
-      src = await new Promise((resolve) => {
-        const image = new Image()
-        image.onload = () => resolve(image)
-        image.src = URL.createObjectURL(src)
-      })
+    if (src.type || typeof src === 'string') {
+      src = await this.loadImage(src)
     }
     const canvas = this.formatImage(src, height, width, maxPixels, contain)
     const blob = await canvas.convertToBlob({ type: 'image/' + format, quality })
@@ -29,6 +25,15 @@ export class Storage {
       cacheControl: 'public,max-age=31536000'
     }
     return this.uploadFile(blob, path + '.' + format, metadata, progressHandler)
+  }
+
+  loadImage(src) {
+    return new Promise(resolve => {
+      const image = new Image()
+      image.onload = () => resolve(image)
+      image.crossOrigin = 'anonymous'
+      image.src = src
+    })
   }
 
   formatImage (image, height, width, maxPixels, contain) {

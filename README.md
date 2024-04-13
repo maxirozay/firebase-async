@@ -40,6 +40,7 @@ import { getStorage } from 'firebase-async'
 const storage = await getStorage()
 storage.uploadImage(src, path, height, width, quality = 0.8, format = 'webp', maxPixels, contain, progressHandler)
 storage.formatImage(image, height, width)
+storage.loadImage(file or url) return Image
 storage.uploadFile(file, path, uploadSuccessHandler, progressHandler, metadata)
 storage.download(path, name)
 storage.deleteFile(path)

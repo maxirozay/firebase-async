@@ -1,6 +1,5 @@
 import {
   getStorage,
-  uploadString,
   ref,
   getDownloadURL,
   getBlob,
@@ -14,7 +13,7 @@ export class Storage {
     this.storage = getStorage(app)
   }
 
-  async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels, contain) {
+  async uploadImage (src, path, height, width, quality = 0.8, format, maxPixels, contain, progressHandler) {
     format = format || 'webp'
     if (src.type) {
       src = await new Promise((resolve) => {
@@ -23,23 +22,19 @@ export class Storage {
         image.src = URL.createObjectURL(src)
       })
     }
-    const data = this.formatImage(src, height, width, maxPixels, contain)
-      .toDataURL('image/' + format, quality)
-    const pathRef = ref(this.storage, path + '.' + format)
+    const canvas = this.formatImage(src, height, width, maxPixels, contain)
+    const blob = await canvas.convertToBlob({ type: 'image/' + format, quality })
     const metadata = {
       contentType: 'image/' + format,
       cacheControl: 'public,max-age=31536000'
     }
-    await uploadString(pathRef, data, 'data_url', metadata)
-    return getDownloadURL(pathRef)
+    return this.uploadFile(blob, path + '.' + format, metadata, progressHandler)
   }
 
   formatImage (image, height, width, maxPixels, contain) {
-    const canvas = document.createElement('canvas')
+    const canvas = new OffscreenCanvas(image.width, image.height)
     const ctx = canvas.getContext('2d')
     if (!height && !width && !maxPixels) {
-      canvas.height = image.height
-      canvas.width = image.width
       ctx.drawImage(image, 0, 0)
       return canvas
     }
@@ -66,7 +61,7 @@ export class Storage {
       const pixels = image.width * image.height
       if (pixels > maxPixels) scale = Math.min(1, Math.sqrt(maxPixels / pixels))
     }
-    const scaleW = width ? width / image.width : scale 
+    const scaleW = width ? width / image.width : scale
     const scaleH = height ? height / image.height : scale
     if (width && height) {
       scale = contain ? Math.min(scaleH, scaleW) : Math.max(scaleH, scaleW)

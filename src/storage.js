@@ -32,7 +32,7 @@ export class Storage {
       const image = new Image()
       image.onload = () => resolve(image)
       image.crossOrigin = 'anonymous'
-      image.src = src
+      image.src = src.type ? URL.createObjectURL(src) : src
     })
   }
 

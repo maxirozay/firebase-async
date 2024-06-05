@@ -19,7 +19,7 @@ export class Storage {
       src = await this.loadImage(src)
     }
     const canvas = this.formatImage(src, height, width, maxPixels, contain)
-    const blob = await canvas.convertToBlob({ type: 'image/' + format, quality })
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/' + format, quality))
     const metadata = {
       contentType: 'image/' + format,
       cacheControl: 'public,max-age=31536000'
@@ -37,7 +37,9 @@ export class Storage {
   }
 
   formatImage (image, height, width, maxPixels, contain) {
-    const canvas = new OffscreenCanvas(image.width, image.height)
+    const canvas = document.createElement('canvas')
+    canvas.width = image.width
+    canvas.height = image.height
     const ctx = canvas.getContext('2d')
     if (!height && !width && !maxPixels) {
       ctx.drawImage(image, 0, 0)

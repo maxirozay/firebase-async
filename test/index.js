@@ -1,6 +1,7 @@
 import { loadConfig, getApp, getAuth, getDB, callFunction, getStorage, getAnalytics, emulate } from '../src/index.js'
 import config from './config.js'
 
+self.FIREBASE_APPCHECK_DEBUG_TOKEN = config['[DEFAULT]'].recaptchaID
 loadConfig(config)
 getApp()
 test().catch(error => {

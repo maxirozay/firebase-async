@@ -8,8 +8,8 @@ export class Functions {
     this.functions = getFunctions(app, config)
   }
 
-  callFunction (name, params) {
-    const f = httpsCallable(this.functions, name)
+  callFunction (name, params, options) {
+    const f = httpsCallable(this.functions, name, options)
     return f(params)
   }
 }

@@ -1,3 +1,5 @@
 const { onCall } = require('firebase-functions/v2/https')
 
-exports.test = onCall((request) => {})
+exports.test = onCall({
+  enforceAppCheck: true
+}, (request) => {})

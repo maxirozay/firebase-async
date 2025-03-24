@@ -16,9 +16,16 @@ export function getApp (appName = defaultName) {
   return apps[appName]
 }
 
-async function load (Lib, libName, appName) {
+async function load (Lib, libName, appName = defaultName) {
   const app = getApp(appName)
   if (!app[libName]) {
+    if (config[appName].recaptchaID && !app.appCheck) {
+      const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('./appCheck')
+      app.appCheck = initializeAppCheck(app.app, {
+        provider: new ReCaptchaEnterpriseProvider(config[appName].recaptchaID),
+        isTokenAutoRefreshEnabled: true
+      })
+    }
     app[libName] = new Lib(app.app, config[appName || defaultName][libName])
   }
   return app[libName]
@@ -38,9 +45,9 @@ export async function getAuth (appName) {
   return load((await import('./auth')).Auth, 'auth', appName)
 }
 
-export async function callFunction (functionName, params, appName) {
+export async function callFunction (functionName, params, options, appName) {
   const functions = await load((await import('./functions')).Functions, 'functions', appName)
-  return functions.callFunction(functionName, params, appName)
+  return functions.callFunction(functionName, params, options)
 }
 
 export async function getAnalytics (appName) {

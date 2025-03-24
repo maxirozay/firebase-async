@@ -20,7 +20,7 @@
   "homepage": "https://github.com/maxirozay/firebase-async#readme",
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "firebase": "^10.8.0",
+    "firebase": "^11.5.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "vite": "^5.2.8"
   }

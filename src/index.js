@@ -20,7 +20,7 @@ async function load (Lib, libName, appName = defaultName) {
   const app = getApp(appName)
   if (!app[libName]) {
     if (config[appName].recaptchaID && !app.appCheck) {
-      const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('./appCheck')
+      const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('./appCheck.js')
       app.appCheck = initializeAppCheck(app.app, {
         provider: new ReCaptchaEnterpriseProvider(config[appName].recaptchaID),
         isTokenAutoRefreshEnabled: true
@@ -32,30 +32,30 @@ async function load (Lib, libName, appName = defaultName) {
 }
 
 export async function getDB (full, persist, appName) {
-  const db = await load((await import('./firestore')).Firestore, 'firestore', appName)
+  const db = await load((await import('./firestore.js')).Firestore, 'firestore', appName)
   await db.loadSDK(!!full, !!persist)
   return db
 }
 
 export async function getStorage (appName) {
-  return load((await import('./storage')).Storage, 'storage', appName)
+  return load((await import('./storage.js')).Storage, 'storage', appName)
 }
 
 export async function getAuth (appName) {
-  return load((await import('./auth')).Auth, 'auth', appName)
+  return load((await import('./auth.js')).Auth, 'auth', appName)
 }
 
 export async function callFunction (functionName, params, options, appName) {
-  const functions = await load((await import('./functions')).Functions, 'functions', appName)
+  const functions = await load((await import('./functions.js')).Functions, 'functions', appName)
   return functions.callFunction(functionName, params, options)
 }
 
 export async function getAnalytics (appName) {
-  return load((await import('./analytics')).Analytics, 'analytics', appName)
+  return load((await import('./analytics.js')).Analytics, 'analytics', appName)
 }
 
 export async function emulate (appName) {
-  const functions = await load((await import('./functions')).Functions, 'functions', appName)
-  const emulator = await import('./emulator')
+  const functions = await load((await import('./functions.js')).Functions, 'functions', appName)
+  const emulator = await import('./emulator.js')
   emulator.start(functions.functions)
 }

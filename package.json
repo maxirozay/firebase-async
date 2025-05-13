@@ -1,6 +1,6 @@
 {
   "name": "firebase-async",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Firebase Async is a firebase wrapper to load firebase only when you need it so it's not bundled in the main file. It also simplifies functions calls.",
   "main": "src/index.js",
   "type": "module",

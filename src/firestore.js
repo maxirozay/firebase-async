@@ -43,7 +43,8 @@ export class Firestore {
     const snapShot = await this.getDoc(ref)
     return {
       id,
-      data: snapShot.data()
+      data: snapShot.data(),
+      path: snapShot.ref.path
     }
   }
 
@@ -62,7 +63,8 @@ export class Firestore {
     const docs = []
     snapShot.forEach(doc => docs.push({
       id: doc.id,
-      data: doc.data()
+      data: doc.data(),
+      path: doc.ref.path
     }))
     return docs
   }
@@ -79,19 +81,24 @@ export class Firestore {
     return snapShot.data()
   }
 
+  getItemRef (item, path) {
+    if (path) return this.getRef(path, item.id)
+    return this.getRef(item.path)
+  }
+
   async set (item, path) {
     if (item.id) {
-      return this.setDoc(this.getRef(path, item.id), item.data)
+      return this.setDoc(this.getItemRef(item, path), item.data)
     }
     const snapShot = await this.addDoc(this.collection(this.firestore, path), item.data)
     item.id = snapShot.id
   }
 
   async update (item, data, path) {
-    return this.updateDoc(this.getRef(path, item.id), data)
+    return this.updateDoc(this.getItemRef(item, path), data)
   }
 
   async del (item, path) {
-    return this.deleteDoc(this.getRef(path, item.id))
+    return this.deleteDoc(this.getItemRef(item, path))
   }
 }

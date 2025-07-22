@@ -1,6 +1,16 @@
 # Firebase Async
 Firebase Async is a firebase wrapper to load firebase only when you need it so it's not bundled in the main file. It also simplifies functions calls.
 
+✨ **Now with full TypeScript support!** ✨
+
+## Features
+- 🚀 Lazy loading - Firebase SDK only loads when needed
+- 📦 Tree-shakable - Only bundle what you use
+- 🔥 Full Firebase support - Firestore, Auth, Storage, Functions, Analytics
+- 📘 TypeScript support with comprehensive type definitions
+- 🎯 Simplified API for common operations
+- 💾 Built-in persistence support for Firestore
+
 # Getting started
 ## Load your config
 ```
@@ -45,6 +55,26 @@ storage.uploadFile(file, path, uploadSuccessHandler, progressHandler, metadata)
 storage.download(path, name)
 storage.deleteFile(path)
 storage.deleteFolder(path)
+```
+
+## TypeScript Support
+
+This library includes comprehensive TypeScript definitions. For detailed TypeScript usage examples, see [TYPESCRIPT.md](./TYPESCRIPT.md).
+
+```typescript
+import { getDB, loadConfig } from 'firebase-async'
+import type { Config, DocItem } from 'firebase-async'
+
+const config: Config = {
+  '[DEFAULT]': {
+    app: { /* your Firebase config */ }
+  }
+}
+
+loadConfig(config)
+
+const db = await getDB(true, true) // Full SDK with persistence
+const users: DocItem[] = await db.getDocs('users')
 ```
 ## Functions
 ```

@@ -3,10 +3,39 @@
   "version": "1.8.3",
   "description": "Firebase Async is a firebase wrapper to load firebase only when you need it so it's not bundled in the main file. It also simplifies functions calls.",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./firestore": {
+      "types": "./src/firestore.d.ts",
+      "import": "./src/firestore.js"
+    },
+    "./storage": {
+      "types": "./src/storage.d.ts",
+      "import": "./src/storage.js"
+    },
+    "./auth": {
+      "types": "./src/auth.d.ts",
+      "import": "./src/auth.js"
+    },
+    "./functions": {
+      "types": "./src/functions.d.ts",
+      "import": "./src/functions.js"
+    },
+    "./analytics": {
+      "types": "./src/analytics.d.ts",
+      "import": "./src/analytics.js"
+    }
+  },
   "scripts": {
     "test": "concurrently \"vite test\" \"firebase emulators:start --only functions\"",
-    "build": "vite build test"
+    "build": "vite build test",
+    "build:types": "tsc --emitDeclarationOnly",
+    "type-check": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -19,9 +48,11 @@
   },
   "homepage": "https://github.com/maxirozay/firebase-async#readme",
   "devDependencies": {
+    "@types/node": "^24.0.15",
     "concurrently": "^8.2.2",
     "firebase": "^11.5.0",
     "rollup-plugin-visualizer": "^5.12.0",
+    "typescript": "^5.8.3",
     "vite": "^5.2.8"
   }
 }

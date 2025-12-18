@@ -42,7 +42,7 @@ export class Firestore {
     const ref = this.getRef(path, id)
     const snapShot = await this.getDoc(ref)
     return {
-      id,
+      id: snapShot.id,
       data: snapShot.data(),
       path: snapShot.ref.path
     }
